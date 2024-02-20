@@ -1,8 +1,9 @@
-FROM mysql:5.7
+FROM mysql:8.0
 
 # Set environment variables for MySQL
 ENV MYSQL_ROOT_PASSWORD=MountKilimanjaro
 ENV MYSQL_DATABASE=rewards
+ENV MYSQL_USER=root
 
 # Copy the MySQL dump file to the container
 COPY dump.sql /docker-entrypoint-initdb.d/
