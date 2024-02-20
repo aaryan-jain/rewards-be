@@ -8,7 +8,7 @@ RUN gradle clean build
 
 FROM amazoncorretto:17-alpine3.18
 EXPOSE 8080
-ENV SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/database?autoReconnect=true&useSSL=false
+ENV SPRING_DATASOURCE_URL: jdbc:mysql://sqlcontainer:3306/rewards?autoReconnect=true&useSSL=false
 RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
 ENTRYPOINT ["java","-jar","/app/spring-boot-application.jar"]
