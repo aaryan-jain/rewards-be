@@ -3,7 +3,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "Review")
+@Table(name = "review")
 public class ReviewEntity {
 
     @Id

@@ -2,7 +2,7 @@ package com.rewards.api.Store.StoreTime;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "StoreTime")
+@Table(name = "storetime")
 public class StoreTimeEntity {
 
     @Id

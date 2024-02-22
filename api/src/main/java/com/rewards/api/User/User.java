@@ -4,7 +4,7 @@ package com.rewards.api.User;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "User")
+@Table(name = "user")
 public class User {
 
     @Id

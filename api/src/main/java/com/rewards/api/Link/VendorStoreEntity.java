@@ -2,7 +2,7 @@ package com.rewards.api.Link;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "VendorShopLink")
+@Table(name = "vendorshoplink")
 public class VendorStoreEntity {
 
     @Id

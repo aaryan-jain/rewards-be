@@ -3,7 +3,7 @@ package com.rewards.api.Store;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Store")
+@Table(name = "store")
 public class StoreEntity {
 
     @Id
