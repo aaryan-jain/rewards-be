@@ -1,4 +1,5 @@
 package com.rewards.api.Favorites;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +27,26 @@ public class FavoritesController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/userId/{userId}")
+    public ResponseEntity<UserFavouritesDto> getFavouritesByUserId(@PathVariable String userId) {
+        Optional<UserFavouritesDto> favorites = favoritesService.getFavoritesByUserClerkId(userId);
+        return favorites.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @PostMapping
     public ResponseEntity<FavoritesEntity> createFavorites(@RequestBody FavoritesEntity favorites) {
         FavoritesEntity createdFavorites = favoritesService.saveFavorites(favorites);
         return new ResponseEntity<>(createdFavorites, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<UserFavouritesDto> updateFavorites(@RequestBody UpdateFavoritesDto favoritesDto) {
+        try {
+        return new ResponseEntity<UserFavouritesDto>(favoritesService.updateFavouritesByUserClerkIdAndStoreId(favoritesDto.getUserClerkId(), favoritesDto.getShopId()), HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")

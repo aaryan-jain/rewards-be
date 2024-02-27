@@ -1,5 +1,6 @@
 package com.rewards.api.User;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,23 @@ public class UserController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("clerkId/{clerkId}")
+    public ResponseEntity<User> getUserByClerkId(@PathVariable String clerkId) {
+        try {
+        User user = userService.findByClerkId(clerkId);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("update") ResponseEntity<User> updateUserByUserClerkId(@RequestBody UpdateUserDto updateUserDto) {
+        try {
+            return new ResponseEntity<>(userService.updateUser(updateUserDto), HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User createdUser = userService.saveUser(user);

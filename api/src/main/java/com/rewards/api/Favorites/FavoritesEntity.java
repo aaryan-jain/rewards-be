@@ -43,6 +43,26 @@ public class FavoritesEntity {
         return disableDate;
     }
 
+    public FavoritesEntity(Long shopId, Long userId, Long disable, Date disableDate) {
+        this.shopId = shopId;
+        this.userId = userId;
+        this.disable = disable;
+        this.disableDate = disableDate;
+    }
+
+    public void toggleDisableAndDate() {
+        if(this.disable != null) {
+            if(this.disable == 1L) {
+                this.disable = 0L;
+            } else {
+                this.disable = 1L;
+            }
+        } else {
+            this.disable = 1L;
+        }
+        this.disableDate = new Date();
+    }
+
     // Constructors, getters, and setters
 }
 

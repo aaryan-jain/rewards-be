@@ -12,6 +12,7 @@ public class User {
     @Column(name = "_id")
     private Long id;
 
+    //username - clerkId
     @Column(name = "userId", nullable = false)
     private String userId;
 
@@ -29,6 +30,7 @@ public class User {
 
     @Column(name = "userTypeId", nullable = false)
     private Long userTypeId;
+
 
     // Constructors, getters, and setters
 
@@ -58,5 +60,10 @@ public class User {
 
     public Long getUserTypeId() {
         return userTypeId;
+    }
+
+    public void changeFirstAndLastname(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 }
