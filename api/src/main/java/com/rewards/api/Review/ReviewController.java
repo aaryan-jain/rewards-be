@@ -1,4 +1,5 @@
 package com.rewards.api.Review;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +27,25 @@ public class ReviewController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("userId/{userClerkId}")
+    public ResponseEntity<UserReviewDto> getReviewsByUserClerkId(@PathVariable String userClerkId) {
+        try {
+            return new ResponseEntity<>(reviewService.getAllReviewsByUserClerkId(userClerkId), HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping
-    public ResponseEntity<ReviewEntity> createReview(@RequestBody ReviewEntity review) {
-        ReviewEntity createdReview = reviewService.saveReview(review);
+    public ResponseEntity<ReviewEntity> createReview(@RequestBody UpdateReviewDto review) {
+        ReviewEntity createdReview = reviewService.createOrUpdateReviewByUserClerkId(review);
         return new ResponseEntity<>(createdReview, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<ReviewEntity> updateReview(@RequestBody UpdateReviewDto review) {
+        ReviewEntity updatedReview = reviewService.createOrUpdateReviewByUserClerkId(review);
+        return new ResponseEntity<>(updatedReview, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

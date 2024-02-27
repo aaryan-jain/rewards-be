@@ -24,7 +24,14 @@ public class ReviewEntity {
     private String description;
 
     @Column(name = "rating", nullable = false)
-    private int rating;
+    private Integer rating;
+
+    public ReviewEntity updateValues(ReviewDto review) {
+        this.description = review.getDescription() == null ? this.description : review.getDescription();
+        this.rating = (review.getRating() == null) ? this.rating : review.getRating();
+        this.reviewTime = review.getReviewTime() == null ? this.reviewTime : review.getReviewTime();
+        return this;
+    }
 
     // Constructors, getters, and setters
 
@@ -48,8 +55,16 @@ public class ReviewEntity {
         return description;
     }
 
-    public int getRating() {
+    public Integer getRating() {
         return rating;
+    }
+
+    public ReviewEntity(Long shopId, Long userId, Timestamp reviewTime, String description, int rating) {
+        this.shopId = shopId;
+        this.userId = userId;
+        this.reviewTime = reviewTime;
+        this.description = description;
+        this.rating = rating;
     }
 }
 

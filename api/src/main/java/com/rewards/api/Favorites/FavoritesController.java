@@ -28,8 +28,8 @@ public class FavoritesController {
     }
 
     @GetMapping("/userId/{userId}")
-    public ResponseEntity<UserFavouritesDto> getFavouritesByUserId(@PathVariable String userId) {
-        Optional<UserFavouritesDto> favorites = favoritesService.getFavoritesByUserClerkId(userId);
+    public ResponseEntity<UserFavouritesDto> getAllFavouritesByUserId(@PathVariable String userClerkId) {
+        Optional<UserFavouritesDto> favorites = favoritesService.getFavoritesByUserClerkId(userClerkId);
         return favorites.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
