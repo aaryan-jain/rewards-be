@@ -24,7 +24,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeRequests()
-                .requestMatchers("/login", "/token", "/hello").permitAll() // Exclude login and token endpoints from authentication
+                .requestMatchers("/login", "/token", "/hello", "/users").permitAll() // Exclude login and token endpoints from authentication
                 .anyRequest().authenticated()
                 .and().exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthEntryPoint));
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
