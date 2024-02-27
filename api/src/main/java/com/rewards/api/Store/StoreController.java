@@ -26,6 +26,13 @@ public class StoreController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+//    @GetMapping("/withImages/{id}")
+//    public ResponseEntity<StoreEntity> getStoreWithImagesById(@PathVariable Long id) {
+//        Optional<StoreEntity> store = storeService.getStoreWithImagesById(id);
+//        return store.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+//                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+//    }
+
     @PostMapping
     public ResponseEntity<StoreEntity> createStore(@RequestBody StoreEntity store) {
         StoreEntity createdStore = storeService.saveStore(store);

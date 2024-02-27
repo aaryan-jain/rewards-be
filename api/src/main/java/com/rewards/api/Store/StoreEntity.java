@@ -1,6 +1,9 @@
 package com.rewards.api.Store;
 
+import com.rewards.api.Link.StoreImageEntity;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "store")
@@ -30,8 +33,15 @@ public class StoreEntity {
     @Column(name = "storeName", nullable = false)
     private String storeName;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
+    private List<StoreImageEntity> storeImageEntity;
+
     public Long getId() {
         return id;
+    }
+
+    public List<StoreImageEntity> getStoreImageEntity() {
+        return storeImageEntity;
     }
 
     public int getTotalReviews() {
