@@ -1,6 +1,7 @@
 package com.rewards.api.User;
 
 
+import com.rewards.api.Shared.UserType;
 import jakarta.persistence.*;
 
 @Entity
@@ -65,5 +66,17 @@ public class User {
     public void changeFirstAndLastname(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public User(CreateUserDto createUserDto) {
+        this.firstName = createUserDto.getFirstName();
+        this.lastName = createUserDto.getLastName();
+        this.userId = createUserDto.getUserId();
+        this.username = createUserDto.getUsername();
+        this.email = createUserDto.getEmail();
+        this.userTypeId = createUserDto.getUserType().equals(UserType.VENDOR) ? 1L : 2L;
+    }
+
+    public User() {
     }
 }

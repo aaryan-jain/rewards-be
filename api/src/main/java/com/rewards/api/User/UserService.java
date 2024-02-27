@@ -27,7 +27,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User saveUser(User user) {
+    private User saveUser(User user) {
         return userRepository.save(user);
     }
 
@@ -47,5 +47,10 @@ public class UserService {
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException(e);
         }
+    }
+
+    public User saveNewUser(CreateUserDto user) {
+        User usertobesaved = new User(user);
+        return userRepository.save(usertobesaved);
     }
 }
