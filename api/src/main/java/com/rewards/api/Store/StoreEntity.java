@@ -1,6 +1,7 @@
 package com.rewards.api.Store;
 
 import com.rewards.api.Link.StoreImageEntity;
+import com.rewards.api.Store.StoreTime.StoreTimeEntity;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -36,12 +37,19 @@ public class StoreEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
     private List<StoreImageEntity> storeImageEntity;
 
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "store")
+    private StoreTimeEntity storeTimeEntity;
+
     public Long getId() {
         return id;
     }
 
     public List<StoreImageEntity> getStoreImageEntity() {
         return storeImageEntity;
+    }
+
+    public StoreTimeEntity getStoreTimeEntity() {
+        return storeTimeEntity;
     }
 
     public int getTotalReviews() {

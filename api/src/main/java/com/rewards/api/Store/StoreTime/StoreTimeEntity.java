@@ -1,4 +1,5 @@
 package com.rewards.api.Store.StoreTime;
+import com.rewards.api.Store.StoreEntity;
 import jakarta.persistence.*;
 
 @Entity
@@ -17,7 +18,11 @@ public class StoreTimeEntity {
     private String closeTime;
 
     @Column(name = "offDays")
-    private Long offDays;
+    private String offDays;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="shopId")
+    private StoreEntity store;
 
     public Long getId() {
         return id;
@@ -31,7 +36,7 @@ public class StoreTimeEntity {
         return closeTime;
     }
 
-    public Long getOffDays() {
+    public String getOffDays() {
         return offDays;
     }
 

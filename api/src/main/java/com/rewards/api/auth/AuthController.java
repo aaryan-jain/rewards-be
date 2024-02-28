@@ -2,6 +2,8 @@ package com.rewards.api.auth;
 
 import com.rewards.api.User.User;
 import com.rewards.api.User.UserService;
+import com.rewards.api.auth.apikey.ApiKeyService;
+import com.rewards.api.auth.dto.ApiKeyResponse;
 import com.rewards.api.auth.dto.JwtRequest;
 import com.rewards.api.auth.dto.JwtResponse;
 import com.rewards.api.auth.dto.UserDetailsDto;
@@ -34,16 +36,21 @@ public class AuthController {
         return "Helllo there";
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
-        try {
-        User userDetails = userService.findByClerkId(request.getUserId());
-        String token = this.helper.generateToken(userDetails);
-        JwtResponse jwtResponse = new JwtResponse(userDetails.getUserId(), token);
-        return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+//    @PostMapping("/login")
+//    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
+//        try {
+//        User userDetails = userService.findByClerkId(request.getUserId());
+//        String token = this.helper.generateToken(userDetails);
+//        JwtResponse jwtResponse = new JwtResponse(userDetails.getUserId(), token);
+//        return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+//        } catch (EntityNotFoundException e) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
+
+    @PostMapping("/token")
+    public ResponseEntity<ApiKeyResponse> getToken(@RequestBody JwtRequest request) {
+        return new ResponseEntity<>(this.authService.generateApiKeyByClient(request.getUserId()), HttpStatus.OK);
     }
 
 

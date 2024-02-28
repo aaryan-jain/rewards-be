@@ -1,6 +1,7 @@
 package com.rewards.api.auth;
 
 import com.rewards.api.User.User;
+import com.rewards.api.auth.apikey.ApiKeyEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,7 +17,7 @@ public class JwtHelper {
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
     private String secret = "wBM3oq4P+fNtirNfYJOwNw==wBM3oq4P+fNtirNfYJOwNw==wBM3oq4P+fNtirNfYJOwNw==wBM3oq4P+fNtirNfYJOwNw==wBM3oq4P+fNtirNfYJOwNw==";
 
-    public String getClerkIdFromToken(String token) {
+    private String getSubjectFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
@@ -34,28 +35,31 @@ public class JwtHelper {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
-    }
-
     //generate token for user
     public String generateToken(User userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return doGenerateToken(claims, userDetails.getUserId());
     }
 
+    public String generateTokenForApiKey(String client) {
+        Map<String, Object> claims = new HashMap<>();
+        String subject = client + "=====" + new Date().toString();
+        return doGenerateToken(claims, subject);
+    }
     private String doGenerateToken(Map<String, Object> claims, String subject) {
 
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + (25L * 365L * 24L * 60L * 60L * 1000L)))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
-    //validate token
-    public Boolean validateToken(String token, User userDetails) {
-        final String clerkIdFromToken = getClerkIdFromToken(token);
-        return (clerkIdFromToken.equals(userDetails.getUserId()) && !isTokenExpired(token));
+    public String getClientSubjectFromToken(String token) {
+        return getSubjectFromToken(token);
     }
 
+    public Boolean validateTokenForClient(String token, ApiKeyEntity apiKeyEntity) {
+        final String client = getClientSubjectFromToken(token);
+        String clientActual = client.split("=====")[0];
+        return (apiKeyEntity.getClient().equals(clientActual) && apiKeyEntity.getIsDisabled() == 0);
+    }
 }

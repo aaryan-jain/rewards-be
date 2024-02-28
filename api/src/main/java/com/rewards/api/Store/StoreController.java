@@ -1,10 +1,13 @@
 package com.rewards.api.Store;
+import com.rewards.api.Shared.ExceptionResponse;
+import com.rewards.api.Store.dto.StoreNotOpenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -20,10 +23,18 @@ public class StoreController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StoreEntity> getStoreById(@PathVariable Long id) {
-        Optional<StoreEntity> store = storeService.getStoreById(id);
-        return store.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<?> getStoreById(@PathVariable Long id) {
+        StoreEntity store = null;
+        try {
+            store = storeService.getStoreById(id).get();
+            return new ResponseEntity<>(store, HttpStatus.OK);
+        } catch (Exception e) {
+            if(Objects.equals(e.getMessage(), "Store is closed today")) {
+                return new ResponseEntity<>(new StoreNotOpenResponse(e.getMessage()), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ExceptionResponse(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
     }
 
 //    @GetMapping("/withImages/{id}")

@@ -1,7 +1,8 @@
 package com.rewards.api.auth;
 
-import com.rewards.api.User.User;
 import com.rewards.api.User.UserService;
+import com.rewards.api.auth.apikey.ApiKeyEntity;
+import com.rewards.api.auth.apikey.ApiKeyService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -24,17 +26,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     UserService userService;
 
+    @Autowired
+    ApiKeyService apiKeyService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestHeader = request.getHeader("Authorization");
-        String clerkId = null;
+        String client = null;
         String token = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer")) {
             //looking good
             token = requestHeader.substring(7);
             try {
 
-                clerkId = this.jwtHelper.getClerkIdFromToken(token);
+                client = this.jwtHelper.getClientSubjectFromToken(token);
 
             } catch (IllegalArgumentException e) {
                 System.out.println("Illegal Argument while fetching the username !!");
@@ -53,16 +58,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             System.out.println("Invalid Header Value !! ");
         }
 
-        if (clerkId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (client != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
 
             //fetch user detail from username
-            User userDetails = this.userService.findByClerkId(clerkId);
-            Boolean validateToken = this.jwtHelper.validateToken(token, userDetails);
+//            User userDetails = this.userService.findByClerkId(clerkId);
+            String clientActual = client.split("=====")[0];
+            List<ApiKeyEntity> apiKeyEntities = this.apiKeyService.findByClient(clientActual);
+            Boolean validateToken = this.jwtHelper.validateTokenForClient(token, apiKeyEntities.get(0));
             if (validateToken) {
 
                 //set the authentication
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(apiKeyEntities, null, null);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 

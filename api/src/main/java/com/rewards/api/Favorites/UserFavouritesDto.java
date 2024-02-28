@@ -1,6 +1,7 @@
 package com.rewards.api.Favorites;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserFavouritesDto {
     private String userClerkId;
@@ -22,6 +23,6 @@ public class UserFavouritesDto {
     public UserFavouritesDto(String userClerkId, Long userId, List<FavoritesEntity> favourites) {
         this.userClerkId = userClerkId;
         this.userId = userId;
-        this.favourites = favourites;
+        this.favourites = favourites.stream().filter(e -> e.getDisable() == 0L).collect(Collectors.toList());
     }
 }
