@@ -2,6 +2,7 @@ package com.rewards.api.Store;
 
 import com.rewards.api.Link.StoreImageEntity;
 import com.rewards.api.Store.StoreTime.StoreTimeEntity;
+import com.rewards.api.Store.dto.AggregatedStoreDto;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -19,10 +20,10 @@ public class StoreEntity {
     private int totalReviews;
 
     @Column(name = "latitude", nullable = false)
-    private double latitude;
+    private Double latitude;
 
     @Column(name = "longitude", nullable = false)
-    private double longitude;
+    private Double longitude;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "openStatus", nullable = false)
@@ -34,11 +35,21 @@ public class StoreEntity {
     @Column(name = "storeName", nullable = false)
     private String storeName;
 
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "address")
+    private String address;
+    @Column(name = "wheelchairAccessible")
+    private Integer wheelchairAccessible;
+    @Column(name = "website")
+    private String website;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
     private List<StoreImageEntity> storeImageEntity;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "store")
     private StoreTimeEntity storeTimeEntity;
+
 
     public Long getId() {
         return id;
@@ -56,11 +67,15 @@ public class StoreEntity {
         return totalReviews;
     }
 
-    public double getLatitude() {
+    public String getLocation() {
+        return location;
+    }
+
+    public Double getLatitude() {
         return latitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
@@ -74,5 +89,46 @@ public class StoreEntity {
 
     public String getStoreName() {
         return storeName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public Integer getWheelchairAccessible() {
+        return wheelchairAccessible;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public StoreEntity(AggregatedStoreDto se) {
+        this.storeName = se.getStoreName() != null? se.getStoreName():this.storeName;
+        this.latitude = se.getLatitude() != null? se.getLatitude():this.latitude;
+        this.longitude = se.getLongitude() != null? se.getLongitude():this.longitude;
+        this.openStatus = se.getOpenStatus() != null? se.getOpenStatus():this.openStatus;
+        this.storeTimeId = se.getStoreTimeId() != null? se.getStoreTimeId():this.storeTimeId;
+        this.storeImageEntity = se.getStoreImageEntity() != null? se.getStoreImageEntity():this.storeImageEntity;
+        this.storeTimeEntity = se.getStoreTimeEntity() != null? se.getStoreTimeEntity():this.storeTimeEntity;
+        this.website = se.getWebsite() != null? se.getWebsite():this.website;
+        this.wheelchairAccessible = se.getWheelchairAccessible() != null? se.getWheelchairAccessible():this.wheelchairAccessible;
+        this.address = se.getAddress() != null? se.getAddress():this.address;
+        this.location = se.getLocation() != null ? se.getLocation() :this.location;
+    }
+
+    public StoreEntity(Long id, AggregatedStoreDto se) {
+        this.id = id;
+        this.storeName = se.getStoreName() != null? se.getStoreName():this.storeName;
+        this.latitude = se.getLatitude() != null? se.getLatitude():this.latitude;
+        this.longitude = se.getLongitude() != null? se.getLongitude():this.longitude;
+        this.openStatus = se.getOpenStatus() != null? se.getOpenStatus():this.openStatus;
+        this.storeTimeId = se.getStoreTimeId() != null? se.getStoreTimeId():this.storeTimeId;
+        this.storeImageEntity = se.getStoreImageEntity() != null? se.getStoreImageEntity():this.storeImageEntity;
+        this.storeTimeEntity = se.getStoreTimeEntity() != null? se.getStoreTimeEntity():this.storeTimeEntity;
+        this.website = se.getWebsite() != null? se.getWebsite():this.website;
+        this.wheelchairAccessible = se.getWheelchairAccessible() != null? se.getWheelchairAccessible():this.wheelchairAccessible;
+        this.address = se.getAddress() != null? se.getAddress():this.address;
+        this.location = se.getLocation() != null ? se.getLocation() :this.location;
     }
 }

@@ -32,8 +32,23 @@ public class User {
     @Column(name = "userTypeId", nullable = false)
     private Long userTypeId;
 
+    @Column(name = "hashedValue")
+    private String hashedValue;
+
+    @Column(name = "points")
+    private Long points;
+
 
     // Constructors, getters, and setters
+
+
+    public String getHashedValue() {
+        return hashedValue;
+    }
+
+    public Long getPoints() {
+        return points;
+    }
 
     public Long getId() {
         return id;
@@ -68,15 +83,21 @@ public class User {
         this.lastName = lastName;
     }
 
-    public User(CreateUserDto createUserDto) {
+    public User(CreateUserDto createUserDto, StringBuilder hexString) {
         this.firstName = createUserDto.getFirstName();
         this.lastName = createUserDto.getLastName();
         this.userId = createUserDto.getUserId();
         this.username = createUserDto.getUsername();
         this.email = createUserDto.getEmail();
         this.userTypeId = createUserDto.getUserType().equals(UserType.VENDOR) ? 1L : 2L;
+        this.hashedValue = String.valueOf(hexString);
+        this.points = 0L;
     }
 
     public User() {
+    }
+
+    public void changePoints(Long newPoints) {
+        this.points = newPoints;
     }
 }

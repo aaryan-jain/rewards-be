@@ -27,7 +27,12 @@ public class ReviewController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("userId/{userClerkId}")
+    @GetMapping("/shops/{shopId}")
+    public ResponseEntity<?> getReviewId(@PathVariable Long shopId) {
+        return new ResponseEntity<>(reviewService.getReviewsByStoreId(shopId), HttpStatus.OK);
+    }
+
+    @GetMapping("/userId/{userClerkId}")
     public ResponseEntity<UserReviewDto> getReviewsByUserClerkId(@PathVariable String userClerkId) {
         try {
             return new ResponseEntity<>(reviewService.getAllReviewsByUserClerkId(userClerkId), HttpStatus.OK);

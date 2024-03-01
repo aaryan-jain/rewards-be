@@ -49,5 +49,9 @@ public class ReviewService {
             return this.saveReview(rev);
         }
     }
+
+    public List<ReviewEntity> getReviewsByStoreId(Long shopId) {
+        return reviewRepository.findByShopId(shopId);
+    }
 }
 

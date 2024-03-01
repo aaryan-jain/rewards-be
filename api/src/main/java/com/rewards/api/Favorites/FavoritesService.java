@@ -28,6 +28,21 @@ public class FavoritesService {
         }
     }
 
+    public Boolean checkIsStoreFavouriteByUserClerkIdAndStoreId(String clerkId, Long storeId) {
+        try {
+            User user = userService.findByClerkId(clerkId);
+            Optional<FavoritesEntity> fav = favoritesRepository.findByUserIdAndShopId(user.getId(), storeId);
+            if(fav.isEmpty()) {
+                return Boolean.FALSE;
+            } else {
+                // toggle the disable in the entity
+                return Boolean.TRUE;
+            }
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(e);
+        }
+    }
+
     public UserFavouritesDto updateFavouritesByUserClerkIdAndStoreId(String clerkId, Long storeId) {
         try {
             User user = userService.findByClerkId(clerkId);

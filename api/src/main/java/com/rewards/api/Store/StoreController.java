@@ -1,11 +1,14 @@
 package com.rewards.api.Store;
 import com.rewards.api.Shared.ExceptionResponse;
+import com.rewards.api.Store.dto.AggregatedStoreDto;
 import com.rewards.api.Store.dto.StoreNotOpenResponse;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,17 +40,55 @@ public class StoreController {
         }
     }
 
-//    @GetMapping("/withImages/{id}")
-//    public ResponseEntity<StoreEntity> getStoreWithImagesById(@PathVariable Long id) {
-//        Optional<StoreEntity> store = storeService.getStoreWithImagesById(id);
-//        return store.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-//                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-//    }
+    @GetMapping("/userClerkId/{userId}/storeId/{id}")
+    public ResponseEntity<?> getStoreById(@PathVariable String userId, @PathVariable Long id) {
+        AggregatedStoreDto store = null;
+        try {
+            store = storeService.getAggregateObjectOfStoreByUserIdAndStoreId(userId, id);
+            return new ResponseEntity<>(store, HttpStatus.OK);
+        } catch (Exception e) {
+            if(Objects.equals(e.getMessage(), "Store is closed today")) {
+                return new ResponseEntity<>(new StoreNotOpenResponse(e.getMessage()), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ExceptionResponse(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+    @PostMapping("/listOfStoresById")
+    public ResponseEntity<?> getStoresByListOfIds(@RequestBody List<Long> storeIds) {
+        List<AggregatedStoreDto> stores = new ArrayList<>();
+        storeIds.forEach(id -> {
+            try {
+                AggregatedStoreDto store;
+                store = storeService.getAggregateObjectOfStoreByStoreId(id);
+                stores.add(store);
+            } catch (EntityNotFoundException e) {
+                // do nothing
+            } catch (Exception e) {
+                if(Objects.equals(e.getMessage(), "Store is closed today")) {
+                    stores.add(new AggregatedStoreDto(id, OpenStatus.CLOSED));
+                } else {
+                    // do nothing
+                }
+            }
+        });
+        return new ResponseEntity<>(stores, HttpStatus.OK);
+    }
 
     @PostMapping
-    public ResponseEntity<StoreEntity> createStore(@RequestBody StoreEntity store) {
+    public ResponseEntity<StoreEntity> createStore(@RequestBody AggregatedStoreDto store) {
         StoreEntity createdStore = storeService.saveStore(store);
         return new ResponseEntity<>(createdStore, HttpStatus.CREATED);
+    }
+
+    @PatchMapping ResponseEntity<?> updateStore(@RequestBody AggregatedStoreDto storeDto) {
+        try {
+            return new ResponseEntity<>(this.storeService.updateStore(storeDto), HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")

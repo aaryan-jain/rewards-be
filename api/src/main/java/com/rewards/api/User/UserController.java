@@ -27,7 +27,7 @@ public class UserController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("clerkId/{clerkId}")
+    @GetMapping("/clerkId/{clerkId}")
     public ResponseEntity<User> getUserByClerkId(@PathVariable String clerkId) {
         try {
         User user = userService.findByClerkId(clerkId);
@@ -37,7 +37,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("update") ResponseEntity<User> updateUserByUserClerkId(@RequestBody UpdateUserDto updateUserDto) {
+    @PostMapping("/update") ResponseEntity<User> updateUserByUserClerkId(@RequestBody UpdateUserDto updateUserDto) {
         try {
             return new ResponseEntity<>(userService.updateUser(updateUserDto), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
@@ -48,6 +48,12 @@ public class UserController {
     public ResponseEntity<User> createUser(@RequestBody CreateUserDto user) {
         User createdUser = userService.saveNewUser(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/points")
+    public ResponseEntity<User> updatePointsOfUser(@RequestBody UpdateUserPointsDto userPointsDto) {
+        User updatedUser = userService.updateUser(userPointsDto);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
