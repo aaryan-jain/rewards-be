@@ -2,7 +2,7 @@ CREATE DATABASE  IF NOT EXISTS `rewards` /*!40100 DEFAULT CHARACTER SET utf8mb4 
 USE `rewards`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: rewards
+-- Host: ec2-13-233-134-142.ap-south-1.compute.amazonaws.com    Database: rewards
 -- ------------------------------------------------------
 -- Server version	8.0.36
 
@@ -16,6 +16,32 @@ USE `rewards`;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `apikey`
+--
+
+DROP TABLE IF EXISTS `apikey`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `apikey` (
+  `_id` int NOT NULL AUTO_INCREMENT,
+  `client` varchar(45) NOT NULL,
+  `apikey` varchar(500) NOT NULL,
+  `isDisabled` int DEFAULT NULL,
+  PRIMARY KEY (`_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `apikey`
+--
+
+LOCK TABLES `apikey` WRITE;
+/*!40000 ALTER TABLE `apikey` DISABLE KEYS */;
+INSERT INTO `apikey` VALUES (2,'rewards-pwa-next-server','eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyZXdhcmRzLXB3YS1uZXh0LXNlcnZlcj09PT09V2VkIEZlYiAyOCAxMzozODoyOSBJU1QgMjAyNCIsImlhdCI6MTcwOTEwNzcwOSwiZXhwIjoyNDk3NTA3NzA5fQ.CwyTLFKehZSzQRVeZQlFrg4u8lZE8eluGNqELUdmmOjT374MNrzepNjceQedqzsgXxP4WObsHhzprw_1EvJfqw',0);
+/*!40000 ALTER TABLE `apikey` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `favorites`
@@ -89,6 +115,10 @@ CREATE TABLE `store` (
   `openStatus` enum('OPEN','CLOSED') NOT NULL,
   `storeTimeId` bigint unsigned DEFAULT NULL,
   `storeName` varchar(255) NOT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `address` varchar(300) DEFAULT NULL,
+  `wheelchairAccessible` int DEFAULT NULL,
+  `website` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`_id`),
   KEY `store_storetimeid_foreign` (`storeTimeId`),
   CONSTRAINT `store_storetimeid_foreign` FOREIGN KEY (`storeTimeId`) REFERENCES `storetime` (`_id`)
@@ -101,7 +131,7 @@ CREATE TABLE `store` (
 
 LOCK TABLES `store` WRITE;
 /*!40000 ALTER TABLE `store` DISABLE KEYS */;
-INSERT INTO `store` VALUES (6,50,37.77,-122.42,'OPEN',NULL,'Super Mart'),(7,30,40.71,-74.01,'CLOSED',NULL,'City Grocers'),(8,20,34.05,-118.24,'OPEN',NULL,'Downtown Market'),(9,45,41.88,-87.63,'OPEN',NULL,'Metro Foods'),(10,15,51.51,-0.13,'CLOSED',NULL,'Central Superstore');
+INSERT INTO `store` VALUES (6,50,37.77,-122.42,'OPEN',NULL,'Super Mart',NULL,NULL,NULL,NULL),(7,30,40.71,-74.01,'CLOSED',NULL,'City Grocers',NULL,NULL,NULL,NULL),(8,20,34.05,-118.24,'OPEN',NULL,'Downtown Market',NULL,NULL,NULL,NULL),(9,45,41.88,-87.63,'OPEN',NULL,'Metro Foods',NULL,NULL,NULL,NULL),(10,15,51.51,-0.13,'CLOSED',NULL,'Central Superstore',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `store` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -133,6 +163,32 @@ LOCK TABLES `storeholiday` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `storeimagelink`
+--
+
+DROP TABLE IF EXISTS `storeimagelink`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `storeimagelink` (
+  `_id` int NOT NULL AUTO_INCREMENT,
+  `linktoimage` varchar(200) NOT NULL,
+  `imagetype` varchar(45) DEFAULT NULL,
+  `storeId` int NOT NULL,
+  PRIMARY KEY (`_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `storeimagelink`
+--
+
+LOCK TABLES `storeimagelink` WRITE;
+/*!40000 ALTER TABLE `storeimagelink` DISABLE KEYS */;
+INSERT INTO `storeimagelink` VALUES (1,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/6/images/restaurant_688988_restaurant020230608110544.jpg','DISPLAY_PHOTO',6),(2,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/6/images/retro-cafe.jpg','DISPLAY_PHOTO',6),(3,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/6/images/tony-lee-8IKf54pc3qk-unsplash-1.jpg','DISPLAY_PHOTO',6),(4,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/6/logo/coffee-and-cafe-logo-design-inspiration-vector-31020950.jpg','LOGO',6),(5,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/7/images/restaurant_688988_restaurant020230608110544.jpg','DISPLAY_PHOTO',7),(6,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/7/images/retro-cafe.jpg','DISPLAY_PHOTO',7),(7,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/7/images/tony-lee-8IKf54pc3qk-unsplash-1.jpg','DISPLAY_PHOTO',7),(8,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/7/logo/coffee-and-cafe-logo-design-inspiration-vector-31020950.jpg','LOGO',7),(9,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/8/images/restaurant_688988_restaurant020230608110544.jpg','DISPLAY_PHOTO',8),(10,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/8/images/retro-cafe.jpg','DISPLAY_PHOTO',8),(11,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/8/images/tony-lee-8IKf54pc3qk-unsplash-1.jpg','DISPLAY_PHOTO',8),(12,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/8/logo/coffee-and-cafe-logo-design-inspiration-vector-31020950.jpg','LOGO',8),(13,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/9/images/restaurant_688988_restaurant020230608110544.jpg','DISPLAY_PHOTO',9),(14,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/9/images/retro-cafe.jpg','DISPLAY_PHOTO',9),(15,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/9/images/tony-lee-8IKf54pc3qk-unsplash-1.jpg','DISPLAY_PHOTO',9),(16,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/9/logo/coffee-and-cafe-logo-design-inspiration-vector-31020950.jpg','LOGO',9),(17,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/10/images/restaurant_688988_restaurant020230608110544.jpg','DISPLAY_PHOTO',10),(18,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/10/images/retro-cafe.jpg','DISPLAY_PHOTO',10),(19,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/10/images/tony-lee-8IKf54pc3qk-unsplash-1.jpg','DISPLAY_PHOTO',10),(20,'https://rewardsbucket.s3.ap-south-1.amazonaws.com/10/logo/coffee-and-cafe-logo-design-inspiration-vector-31020950.jpg','LOGO',10);
+/*!40000 ALTER TABLE `storeimagelink` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `storetime`
 --
 
@@ -143,9 +199,10 @@ CREATE TABLE `storetime` (
   `_id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `openTime` varchar(255) NOT NULL,
   `closeTime` varchar(255) NOT NULL,
-  `off Days` bigint DEFAULT NULL,
+  `offDays` varchar(255) DEFAULT NULL,
+  `shopId` bigint DEFAULT NULL,
   PRIMARY KEY (`_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -154,6 +211,7 @@ CREATE TABLE `storetime` (
 
 LOCK TABLES `storetime` WRITE;
 /*!40000 ALTER TABLE `storetime` DISABLE KEYS */;
+INSERT INTO `storetime` VALUES (11,'08:00 AM','06:00 PM','Saturday,Sunday',6),(12,'09:30 AM','08:00 PM','Monday',7),(13,'10:00 AM','07:30 PM','Wednesday',8),(14,'07:00 AM','05:30 PM','Thursday',9),(15,'11:00 AM','09:00 PM','Tuesday',10);
 /*!40000 ALTER TABLE `storetime` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -171,12 +229,13 @@ CREATE TABLE `user` (
   `_id` bigint NOT NULL AUTO_INCREMENT,
   `firstName` varchar(255) NOT NULL,
   `lastName` varchar(255) NOT NULL,
-  `userTypeId` bigint unsigned NOT NULL,
+  `userTypeId` varchar(20) DEFAULT 'CONSUMER',
+  `hashedValue` varchar(100) DEFAULT NULL,
+  `points` bigint DEFAULT '0',
   PRIMARY KEY (`_id`),
   UNIQUE KEY `user_userid_unique` (`userId`),
   UNIQUE KEY `user_username_unique` (`username`),
-  KEY `user_usertypeid_foreign` (`userTypeId`),
-  CONSTRAINT `user_usertypeid_foreign` FOREIGN KEY (`userTypeId`) REFERENCES `usertype` (`_id`)
+  KEY `user_usertypeid_foreign` (`userTypeId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -186,7 +245,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('user1','john_doe','john.doe@example.com',6,'John','Doe',1),('user2','jane_smith','jane.smith@example.com',7,'Jane','Smith',2),('user3','alice_jones','alice.jones@example.com',8,'Alice','Jones',1),('user4','bob_miller','bob.miller@example.com',9,'Bob','Miller',2),('user5','emma_white','emma.white@example.com',10,'Emma','White',1);
+INSERT INTO `user` VALUES ('user1','john_doe','john.doe@example.com',6,'John','Doe','1','JFNDKJSNBCHUWOUAHL',10),('user2','jane_smith','jane.smith@example.com',7,'Jane','Smith','2',NULL,0),('user3','alice_jones','alice.jones@example.com',8,'Alice','Jones','1',NULL,0),('user4','bob_miller','bob.miller@example.com',9,'Bob','Miller','2',NULL,0),('user5','emma_white','emma.white@example.com',10,'Emma','White','1',NULL,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -251,4 +310,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-02-18 15:45:40
+-- Dump completed on 2024-03-01 13:32:45
