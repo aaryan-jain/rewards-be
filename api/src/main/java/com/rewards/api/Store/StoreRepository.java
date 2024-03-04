@@ -14,4 +14,6 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
 
     @Query("select s.id from StoreEntity s")
     List<Long> findIds();
+
+    List<StoreEntity> findByStoreNameContainingIgnoreCase(String title);
 }

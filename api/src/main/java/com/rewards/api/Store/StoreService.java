@@ -156,4 +156,12 @@ public class StoreService {
         storeRepository.deleteById(id);
     }
 
+    public List<AggregatedStoreDto> getAggregateObjectOfStoreBySearchString(String searchString) {
+        List<StoreEntity> storeEntities = storeRepository.findByStoreNameContainingIgnoreCase(searchString);
+        List<AggregatedStoreDto> aggregatedStoreDtos = new ArrayList<>();
+        for(StoreEntity se : storeEntities) {
+            aggregatedStoreDtos.add(getAggregateObjectOfStoreByStoreId(se.getId()));
+        }
+        return aggregatedStoreDtos;
+    }
 }
