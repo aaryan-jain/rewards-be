@@ -103,6 +103,18 @@ public class StoreService {
         }
     }
 
+    public List<Long> getListOfIdsOfStore() {
+        return storeRepository.findIds();
+    }
+
+    public List<AggregatedStoreDto> getListOfAllAggregatedStores() {
+        List<AggregatedStoreDto> agss = new ArrayList<>();
+        List<Long> ids = getListOfIdsOfStore();
+        ids.forEach(id -> {
+            agss.add(getAggregateObjectOfStoreByStoreId(id));
+        });
+        return agss;
+    }
 
     public StoreEntity saveStore(AggregatedStoreDto store) {
         StoreEntity se = new StoreEntity(store);
