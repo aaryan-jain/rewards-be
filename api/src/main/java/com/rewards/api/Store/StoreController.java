@@ -44,6 +44,7 @@ public class StoreController {
                  List<AggregatedStoreDto> aggs = storeService.getListOfAllAggregatedStores();
                  ags = aggs;
             }
+            return new ResponseEntity<>(ags, HttpStatus.OK);
         } catch (Exception e) {
             if(Objects.equals(e.getMessage(), "Store is closed today")) {
                 return new ResponseEntity<>(new StoreNotOpenResponse(e.getMessage()), HttpStatus.OK);
