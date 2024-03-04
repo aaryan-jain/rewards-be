@@ -139,4 +139,8 @@ public class AggregatedStoreDto {
         this.address = se.getAddress();
         this.location = se.getLocation();
     }
+
+    public void markStoreFavourite() {
+        this.isFav = Boolean.TRUE;
+    }
 }

@@ -20,14 +20,14 @@ public class StoreController {
     @Autowired
     private StoreService storeService;
 
-    @GetMapping
-    public List<StoreEntity> getAllStores() {
-        return storeService.getAllStores();
-    }
+//    @GetMapping
+//    public List<StoreEntity> getAllStores() {
+//        return storeService.getAllStores();
+//    }
 
 
     @GetMapping
-    public ResponseEntity<?> getAllStores(@RequestParam("clerkUserId") String clerkUserId, @RequestParam("ids") List<Long> storeIdLists) {
+    public ResponseEntity<?> getAllStores(@RequestParam(value = "clerkUserId", required = false) String clerkUserId, @RequestParam(value = "ids", required = false) List<Long> storeIdLists) {
         List<AggregatedStoreDto> ags = new ArrayList<>();
         try {
             if(storeIdLists != null && !storeIdLists.isEmpty()){
@@ -41,11 +41,17 @@ public class StoreController {
                     }
                 }
             } else {
-                 List<AggregatedStoreDto> aggs = storeService.getListOfAllAggregatedStores();
-                 ags = aggs;
+                if(clerkUserId != null) {
+                    List<AggregatedStoreDto> aggs = storeService.getListOfAllAggregatedStores(clerkUserId);
+                    ags = aggs;
+                } else {
+                    List<AggregatedStoreDto> aggs = storeService.getListOfAllAggregatedStores();
+                    ags = aggs;
+                }
             }
             return new ResponseEntity<>(ags, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             if(Objects.equals(e.getMessage(), "Store is closed today")) {
                 return new ResponseEntity<>(new StoreNotOpenResponse(e.getMessage()), HttpStatus.OK);
             } else {

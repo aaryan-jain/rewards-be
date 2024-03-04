@@ -2,9 +2,7 @@ package com.rewards.api.Store;
 import com.rewards.api.Favorites.FavoritesService;
 import com.rewards.api.Review.ReviewEntity;
 import com.rewards.api.Review.ReviewService;
-import com.rewards.api.Shared.ExceptionEnum;
 import com.rewards.api.Store.dto.AggregatedStoreDto;
-import com.rewards.api.User.User;
 import com.rewards.api.User.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class StoreService {
@@ -41,7 +38,8 @@ public class StoreService {
                 List<String> collect = new ArrayList<>();
                 for (String e : storeEntity.getStoreTimeEntity().getOffDays().split(",")) {
                     if (e.equalsIgnoreCase(dayOfWeek)) {
-                        throw new Exception("Store is closed today");
+//                        throw new Exception("Store is closed today");
+                        storeEntity.markStoreClosed();
                     }
                 }
             }
@@ -55,15 +53,15 @@ public class StoreService {
             Boolean isFav = this.favoritesService.checkIsStoreFavouriteByUserClerkIdAndStoreId(userClerkId, storeId);
             List<ReviewEntity> reviews = this.reviewService.getReviewsByStoreId(storeId);
             List<Integer> ratingsList = reviews.stream().map(ReviewEntity::getRating).toList();
-            int count = 0;
-            int sum = 0;
+            Integer count = 0;
+            Integer sum = 0;
             for(Integer rating: ratingsList) {
                 if(rating != null) {
                     count++;
                     sum = sum + rating;
                 }
             }
-            Double averageRating = Double.valueOf(count != 0 ? sum/count: null);
+            Double averageRating = count != 0 ? (double) (sum / count) : null;
             Optional<StoreEntity> storeEntity = getStoreById(storeId);
             if(storeEntity.isPresent()) {
                 return new AggregatedStoreDto(storeEntity.get(), isFav, averageRating, reviews.size());
@@ -73,7 +71,7 @@ public class StoreService {
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException(e);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+                throw new RuntimeException(e);
         }
     }
 
@@ -81,15 +79,15 @@ public class StoreService {
         try {
             List<ReviewEntity> reviews = this.reviewService.getReviewsByStoreId(storeId);
             List<Integer> ratingsList = reviews.stream().map(ReviewEntity::getRating).toList();
-            int count = 0;
-            int sum = 0;
+            Integer count = 0;
+            Integer sum = 0;
             for(Integer rating: ratingsList) {
                 if(rating != null) {
                     count++;
                     sum = sum + rating;
                 }
             }
-            Double averageRating = Double.valueOf(count != 0 ? sum/count: null);
+            Double averageRating = count != 0 ? (double) (sum / count) : null;
             Optional<StoreEntity> storeEntity = getStoreById(storeId);
             if(storeEntity.isPresent()) {
                 return new AggregatedStoreDto(storeEntity.get(), averageRating, reviews.size());
@@ -111,7 +109,30 @@ public class StoreService {
         List<AggregatedStoreDto> agss = new ArrayList<>();
         List<Long> ids = getListOfIdsOfStore();
         ids.forEach(id -> {
-            agss.add(getAggregateObjectOfStoreByStoreId(id));
+            try {
+                AggregatedStoreDto aggregateObjectOfStoreByStoreId = getAggregateObjectOfStoreByStoreId(id);
+                agss.add(aggregateObjectOfStoreByStoreId);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return agss;
+    }
+
+    public List<AggregatedStoreDto> getListOfAllAggregatedStores(String clerkId) {
+        List<AggregatedStoreDto> agss = new ArrayList<>();
+        List<Long> ids = getListOfIdsOfStore();
+        ids.forEach(id -> {
+            try {
+                Boolean isFav = this.favoritesService.checkIsStoreFavouriteByUserClerkIdAndStoreId(clerkId, id);
+                AggregatedStoreDto aggregateObjectOfStoreByStoreId = getAggregateObjectOfStoreByStoreId(id);
+                if (isFav) {
+                    aggregateObjectOfStoreByStoreId.markStoreFavourite();
+                }
+                agss.add(aggregateObjectOfStoreByStoreId);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
         return agss;
     }

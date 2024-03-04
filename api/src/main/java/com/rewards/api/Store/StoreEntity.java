@@ -131,4 +131,14 @@ public class StoreEntity {
         this.address = se.getAddress() != null? se.getAddress():this.address;
         this.location = se.getLocation() != null ? se.getLocation() :this.location;
     }
+
+    private StoreEntity(Long id) {
+        this.id = id;
+    }
+
+    private StoreEntity(){}
+
+    public void markStoreClosed() {
+        this.openStatus = OpenStatus.CLOSED;
+    }
 }

@@ -17,10 +17,10 @@ public class FavoritesEntity {
     @Column(name = "userId", nullable = false)
     private Long userId;
 
-    @Column(name = "disable", nullable = false)
+    @Column(name = "disable")
     private Long disable;
 
-    @Column(name = "disableDate", nullable = false)
+    @Column(name = "disableDate")
     private Date disableDate;
 
     public Long getId() {
@@ -48,6 +48,9 @@ public class FavoritesEntity {
         this.userId = userId;
         this.disable = disable;
         this.disableDate = disableDate;
+    }
+
+    public FavoritesEntity() {
     }
 
     public void toggleDisableAndDate() {

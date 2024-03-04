@@ -12,6 +12,6 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
 
 //    List<StoreId> findAll();
 
-    @Query("select new com.rewards.api.Store.StoreEntity(s.id) from StoreEntity s")
+    @Query("select s.id from StoreEntity s")
     List<Long> findIds();
 }
