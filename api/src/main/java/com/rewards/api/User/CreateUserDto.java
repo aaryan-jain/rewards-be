@@ -1,7 +1,9 @@
 package com.rewards.api.User;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.rewards.api.Shared.UserType;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateUserDto {
     private String userId;
 

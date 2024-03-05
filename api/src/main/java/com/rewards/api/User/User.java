@@ -23,13 +23,13 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "firstName", nullable = false)
+    @Column(name = "firstName")
     private String firstName;
 
-    @Column(name = "lastName", nullable = false)
+    @Column(name = "lastName")
     private String lastName;
 
-    @Column(name = "userTypeId", nullable = false)
+    @Column(name = "userTypeId")
     private Long userTypeId;
 
     @Column(name = "hashedValue")
