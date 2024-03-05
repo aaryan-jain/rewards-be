@@ -55,7 +55,7 @@ public class UserService {
     public User saveNewUser(CreateUserDto user) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(user.getFirstName().getBytes(StandardCharsets.UTF_8));
+            byte[] hash = digest.digest(user.getEmail().getBytes(StandardCharsets.UTF_8));
             StringBuilder hexString = new StringBuilder();
             for (byte b : hash) {
                 String hex = Integer.toHexString(0xff & b);

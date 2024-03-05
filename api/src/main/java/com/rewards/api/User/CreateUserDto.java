@@ -40,4 +40,6 @@ public class CreateUserDto {
     public UserType getUserType() {
         return userType;
     }
+
+    public CreateUserDto() {}
 }
