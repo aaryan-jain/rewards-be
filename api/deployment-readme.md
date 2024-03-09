@@ -2,6 +2,8 @@
 
       I. Use the URL given by the existing Dev to connect to the SQL database.
       II. Take snapshot of the database (preferrably .sql file) and then paste that file in the api folder under the name 'dump.sql'
+      III. Regarding creation of S3 buckets, the structure is - BUCKET --> { id_of_store } --> images --> photos of store images
+                                                                                           --> logo --> logo image of store
 
 
 - DEPLOYMENT STRATEGY:

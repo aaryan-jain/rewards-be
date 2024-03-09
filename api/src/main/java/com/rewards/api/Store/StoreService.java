@@ -1,8 +1,12 @@
 package com.rewards.api.Store;
+import com.rewards.api.Favorites.FavoritesEntity;
 import com.rewards.api.Favorites.FavoritesService;
+import com.rewards.api.Favorites.FavouritesDtoWithAggregatedShops;
+import com.rewards.api.Favorites.UserFavouritesDto;
 import com.rewards.api.Review.ReviewEntity;
 import com.rewards.api.Review.ReviewService;
 import com.rewards.api.Store.dto.AggregatedStoreDto;
+import com.rewards.api.User.User;
 import com.rewards.api.User.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,7 @@ public class StoreService {
     @Autowired private FavoritesService favoritesService;
 
     @Autowired private ReviewService reviewService;
+
 
     public List<StoreEntity> getAllStores() {
         return storeRepository.findAll();
@@ -163,5 +168,22 @@ public class StoreService {
             aggregatedStoreDtos.add(getAggregateObjectOfStoreByStoreId(se.getId()));
         }
         return aggregatedStoreDtos;
+    }
+
+    public Optional<UserFavouritesDto> getFavoritesByUserClerkIdAndLoadShops(String userClerkId) {
+        try {
+            User user = userService.findByClerkId(userClerkId);
+            Long userId = user.getId();
+            List<FavoritesEntity> favoritesEntities = favoritesService.findByUserId(userId);
+            List<FavouritesDtoWithAggregatedShops> favouritesDtoWithAggregatedShops = new ArrayList<>();
+            for (FavoritesEntity favoritesEntity : favoritesEntities) {
+                AggregatedStoreDto aggregateObjectOfStoreByStoreId = this.getAggregateObjectOfStoreByStoreId(favoritesEntity.getShopId());
+                favouritesDtoWithAggregatedShops.add(new FavouritesDtoWithAggregatedShops(favoritesEntity, aggregateObjectOfStoreByStoreId));
+            }
+            UserFavouritesDto userFavouritesDto = new UserFavouritesDto(userClerkId, userId, favouritesDtoWithAggregatedShops);
+            return Optional.of(userFavouritesDto);
+        } catch (EntityNotFoundException e) {
+            return Optional.empty();
+        }
     }
 }

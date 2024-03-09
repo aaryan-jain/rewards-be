@@ -1,4 +1,5 @@
 package com.rewards.api.Favorites;
+import com.rewards.api.Store.StoreService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ public class FavoritesController {
 
     @Autowired
     private FavoritesService favoritesService;
+    @Autowired private StoreService storeService;
 
     @GetMapping
     public List<FavoritesEntity> getAllFavorites() {
@@ -27,11 +29,17 @@ public class FavoritesController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/userId/{userId}")
-    public ResponseEntity<UserFavouritesDto> getAllFavouritesByUserId(@PathVariable String userClerkId) {
-        Optional<UserFavouritesDto> favorites = favoritesService.getFavoritesByUserClerkId(userClerkId);
-        return favorites.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @GetMapping("/userId/{userClerkId}")
+    public ResponseEntity<UserFavouritesDto> getAllFavouritesByUserId(@PathVariable String userClerkId, @RequestParam(required = false) Boolean loadShops) {
+        if(loadShops == null || !loadShops) {
+            Optional<UserFavouritesDto> favorites = favoritesService.getFavoritesByUserClerkId(userClerkId);
+            return favorites.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        } else {
+            Optional<UserFavouritesDto> favorites = this.storeService.getFavoritesByUserClerkIdAndLoadShops(userClerkId);
+            return favorites.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }
     }
 
     @PostMapping

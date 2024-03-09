@@ -1,10 +1,13 @@
 package com.rewards.api.Favorites;
+import com.rewards.api.Store.StoreService;
+import com.rewards.api.Store.dto.AggregatedStoreDto;
 import com.rewards.api.User.User;
 import com.rewards.api.User.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +24,11 @@ public class FavoritesService {
             User user = userService.findByClerkId(clerkId);
             Long userId = user.getId();
             List<FavoritesEntity> favoritesEntities = favoritesRepository.findByUserId(userId);
-            UserFavouritesDto userFavouritesDto = new UserFavouritesDto(clerkId, userId, favoritesEntities);
+            List<FavouritesDtoWithAggregatedShops> favouritesDtoWithAggregatedShops = new ArrayList<>();
+            for (FavoritesEntity favoritesEntity : favoritesEntities) {
+                favouritesDtoWithAggregatedShops.add(new FavouritesDtoWithAggregatedShops(favoritesEntity, null));
+            }
+            UserFavouritesDto userFavouritesDto = new UserFavouritesDto(clerkId, userId, favouritesDtoWithAggregatedShops);
             return Optional.of(userFavouritesDto);
         } catch (EntityNotFoundException e) {
              return Optional.empty();
@@ -76,6 +83,10 @@ public class FavoritesService {
 
     public void deleteFavorites(Long id) {
         favoritesRepository.deleteById(id);
+    }
+
+    public List<FavoritesEntity> findByUserId(Long userId) {
+        return favoritesRepository.findByUserId(userId);
     }
 }
 

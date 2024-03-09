@@ -23,6 +23,14 @@ public class FavoritesEntity {
     @Column(name = "disableDate")
     private Date disableDate;
 
+    public FavoritesEntity(FavoritesEntity fav) {
+        this.id = fav.getId();
+        this.shopId = fav.getShopId();
+        this.userId = fav.getUserId();
+        this.disable = fav.getDisable();
+        this.disableDate = fav.getDisableDate();
+    }
+
     public Long getId() {
         return id;
     }
